@@ -765,8 +765,9 @@ USE ROLE SYSADMIN;
 
 -- Drop Row Access Policies first (must detach before dropping table)
 
+
 ALTER TABLE DAY5_TRAINING_DB.DAY5_DEMO.ORDERS_SECURE 
-  ADD ROW ACCESS POLICY COUNTRY_RLS_POLICY ON (COUNTRY);
+  DROP ROW ACCESS POLICY COUNTRY_RLS_POLICY;
 
 -- Drop the database (cascades all schemas, tables, stages, etc.)
 DROP DATABASE IF EXISTS DAY5_TRAINING_DB;

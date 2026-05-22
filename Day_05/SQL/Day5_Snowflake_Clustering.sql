@@ -4,7 +4,6 @@
 
 -- Step 1: Create or use the warehouse
 USE ROLE SYSADMIN;
-
 CREATE WAREHOUSE IF NOT EXISTS COMPUTE_WH
   WITH WAREHOUSE_SIZE = 'MEDIUM'
   AUTO_SUSPEND = 300
@@ -172,16 +171,16 @@ SELECT $BEFORE_Q3_ID AS before_q3_query_id;
 ALTER SESSION SET QUERY_TAG = '';
 
 -- ── Quick-look: Pull timing for all 3 baseline queries ──
+-- Note: INFORMATION_SCHEMA.QUERY_HISTORY_BY_SESSION() does not expose
+--       PARTITIONS_SCANNED/PARTITIONS_TOTAL. Use query profile in Snowsight
+--       to inspect partition pruning, or wait ~45 min and query
+--       SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY instead.
 SELECT
   QUERY_TAG,
   QUERY_ID,
   TOTAL_ELAPSED_TIME / 1000          AS elapsed_sec,
   EXECUTION_TIME / 1000              AS exec_sec,
   COMPILATION_TIME / 1000            AS compile_sec,
-  PARTITIONS_SCANNED,
-  PARTITIONS_TOTAL,
-  ROUND(PARTITIONS_SCANNED / NULLIF(PARTITIONS_TOTAL, 0) * 100, 1)
-                                     AS pct_partitions_scanned,
   BYTES_SCANNED / POWER(1024,2)      AS mb_scanned,
   ROWS_PRODUCED
 FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY_BY_SESSION())
@@ -251,15 +250,14 @@ SET AFTER_Q3_ID = LAST_QUERY_ID();
 ALTER SESSION SET QUERY_TAG = '';
 
 -- ── Quick-look: Pull timing for all 3 after-clustering queries ──
+-- Note: PARTITIONS_SCANNED/PARTITIONS_TOTAL not available in
+--       INFORMATION_SCHEMA.QUERY_HISTORY_BY_SESSION(). Use query profile
+--       or SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY (45 min latency).
 SELECT
   QUERY_TAG,
   QUERY_ID,
   TOTAL_ELAPSED_TIME / 1000          AS elapsed_sec,
   EXECUTION_TIME / 1000              AS exec_sec,
-  PARTITIONS_SCANNED,
-  PARTITIONS_TOTAL,
-  ROUND(PARTITIONS_SCANNED / NULLIF(PARTITIONS_TOTAL, 0) * 100, 1)
-                                     AS pct_partitions_scanned,
   BYTES_SCANNED / POWER(1024,2)      AS mb_scanned,
   ROWS_PRODUCED
 FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY_BY_SESSION())
@@ -279,8 +277,6 @@ WITH before_stats AS (
     REPLACE(QUERY_TAG, 'BEFORE_CLUSTERING_', '') AS query_label,
     TOTAL_ELAPSED_TIME        AS elapsed_ms,
     EXECUTION_TIME             AS exec_ms,
-    PARTITIONS_SCANNED         AS parts_scanned,
-    PARTITIONS_TOTAL           AS parts_total,
     BYTES_SCANNED              AS bytes_scanned,
     ROWS_PRODUCED
   FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY_BY_SESSION())
@@ -291,8 +287,6 @@ after_stats AS (
     REPLACE(QUERY_TAG, 'AFTER_CLUSTERING_', '') AS query_label,
     TOTAL_ELAPSED_TIME        AS elapsed_ms,
     EXECUTION_TIME             AS exec_ms,
-    PARTITIONS_SCANNED         AS parts_scanned,
-    PARTITIONS_TOTAL           AS parts_total,
     BYTES_SCANNED              AS bytes_scanned,
     ROWS_PRODUCED
   FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY_BY_SESSION())
@@ -306,15 +300,7 @@ SELECT
   ROUND((b.elapsed_ms - a.elapsed_ms)
         / NULLIF(b.elapsed_ms, 0) * 100, 1)
                                AS time_improvement_pct,
-  '--- PARTITIONS ---'        AS "__",
-  b.parts_scanned              AS before_parts_scanned,
-  b.parts_total                AS before_parts_total,
-  a.parts_scanned              AS after_parts_scanned,
-  a.parts_total                AS after_parts_total,
-  ROUND((b.parts_scanned - a.parts_scanned)
-        / NULLIF(b.parts_scanned, 0) * 100, 1)
-                               AS partition_pruning_pct,
-  '--- BYTES ---'             AS "___",
+  '--- BYTES ---'             AS "__",
   ROUND(b.bytes_scanned / POWER(1024,2), 1)
                                AS before_mb_scanned,
   ROUND(a.bytes_scanned / POWER(1024,2), 1)
@@ -343,7 +329,6 @@ ORDER BY b.query_label;
 SELECT
   'BEFORE' AS phase, QUERY_ID,
   TOTAL_ELAPSED_TIME / 1000 AS elapsed_sec,
-  PARTITIONS_SCANNED, PARTITIONS_TOTAL,
   BYTES_SCANNED / POWER(1024,2) AS mb_scanned
 FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY())
 WHERE QUERY_ID = $BEFORE_Q1_ID
@@ -351,7 +336,6 @@ UNION ALL
 SELECT
   'AFTER' AS phase, QUERY_ID,
   TOTAL_ELAPSED_TIME / 1000 AS elapsed_sec,
-  PARTITIONS_SCANNED, PARTITIONS_TOTAL,
   BYTES_SCANNED / POWER(1024,2) AS mb_scanned
 FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY())
 WHERE QUERY_ID = $AFTER_Q1_ID;

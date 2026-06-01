@@ -3,16 +3,12 @@
 
 ---
 
-> **Version:** 1.1 (Bug-Fixed)
-> **Author:** ANALYTICSWITHANAND Framework
+> **Version:** 1.1 
 > **Stack:** Snowpark Python · AWS S3 · Snowflake · Storage Integration · Native Email Notification
 > **Last Updated:** 2026-05-28
 
 ---
 
-## Changelog — v1.0 → v1.1
-
-| # | Bug | Impact in v1.0 | Fix in v1.1 |
 |---|---|---|---|
 | 1 | `AS NULLS` reserved keyword in Snowflake | **Every file rejected silently** via `except Exception` | Renamed alias to `AS NULL_CNT` in `check_null_pct()` |
 | 2 | FK dimension seeding off-by-one (`SEQ4()` starts at 0) | `CUST-0050` missing → FK check always failed | Replaced `SEQ4()` with `ROW_NUMBER()` → generates `CUST-0001` to `CUST-0050` |
@@ -146,7 +142,7 @@ This pipeline is a **parameterised, team-agnostic data quality framework** built
 | `ANALYTICS_DB.RAW.CSV_FORMAT` | 1 | `\n` | Main data loading — skips header row |
 | `ANALYTICS_DB.RAW.CSV_FORMAT_NO_SKIP` | 0 | `\n` | Header reading for column count check (Check 2) |
 
-> **Bug Fix Note:** Both formats now explicitly set `RECORD_DELIMITER = '\n'` to match the Unix line endings produced by the CSV generator (`lineterminator='\n'`). Without this, the last column in each row would have `\r` appended, corrupting values.
+> Set `RECORD_DELIMITER = '\n'` to match the Unix line endings produced by the CSV generator (`lineterminator='\n'`). Without this, the last column in each row would have `\r` appended, corrupting values.
 
 ---
 
@@ -245,9 +241,9 @@ This pipeline is a **parameterised, team-agnostic data quality framework** built
 | `file_06_bad_datatypes.csv` | 80 | 10 | AMOUNT="N/A", DATE="not-a-date" | ❌ **REJECT → /quarantine/** | Check 6: Data Types |
 | `file_07_fk_violation.csv` | 50 | 10 | CUSTOMER_ID = CUST-9001..9050 (not in DIM) | ❌ **REJECT → /quarantine/** | Check 8: FK Constraint |
 
-> **Why files 02 and 03 were redesigned (v1.1):** In v1.0, `file_02` had only 3 rows (row count failure) and `file_03` had only 5 columns (column count failure). The requirement is 3 PASS files and 4 FAIL files, so both were regenerated as genuinely clean data files.
+> The requirement is 3 PASS files and 4 FAIL files, so both are generated as clean data files.
 
-> **Why file 07 was redesigned (v1.1):** The original file_07 was a 229-byte tiny file targeting the file size gate. With `min_file_size_bytes=100` (dev mode), 229 bytes passed the check. Redesigned as an FK violation using customer IDs `CUST-9001` to `CUST-9050` which do not exist in `DIM.CUSTOMERS`.
+> The original file_07 was a 229-byte tiny file targeting the file size gate. With `min_file_size_bytes=100` (dev mode), 229 bytes passed the check. Redesigned as an FK violation using customer IDs `CUST-9001` to `CUST-9050` which do not exist in `DIM.CUSTOMERS`.
 
 ---
 
@@ -464,7 +460,7 @@ CREATE STORAGE INTEGRATION IF NOT EXISTS S3_STORAGE_INTEGRATION
     TYPE                      = EXTERNAL_STAGE
     STORAGE_PROVIDER          = 'S3'
     ENABLED                   = TRUE
-    STORAGE_AWS_ROLE_ARN      = 'arn:aws:iam::668461484967:role/dq-pipeline-role'
+    STORAGE_AWS_ROLE_ARN      = 'arn:aws:iam::<your aws arn>'
     STORAGE_ALLOWED_LOCATIONS = ('s3://snowflake-dq-pipeline-bucket/transactions/');
 
 -- Run DESC and copy output into AWS IAM Trust Policy
@@ -477,9 +473,9 @@ CREATE NOTIFICATION INTEGRATION IF NOT EXISTS EMAIL_NOTIFICATION_INTEGRATION
 -- Role and grants
 CREATE ROLE IF NOT EXISTS DATA_ENGINEER_ROLE;
 GRANT ROLE DATA_ENGINEER_ROLE TO USER ANALYTICSWITHANAND;
-GRANT CREATE DATABASE ON ACCOUNT    TO ROLE DATA_ENGINEER_ROLE;
+GRANT CREATE DATABASE ON ACCOUNT TO ROLE DATA_ENGINEER_ROLE;
 GRANT USAGE ON WAREHOUSE COMPUTE_WH TO ROLE DATA_ENGINEER_ROLE;
-GRANT USAGE ON INTEGRATION S3_STORAGE_INTEGRATION     TO ROLE DATA_ENGINEER_ROLE;
+GRANT USAGE ON INTEGRATION S3_STORAGE_INTEGRATION TO ROLE DATA_ENGINEER_ROLE;
 GRANT USAGE ON INTEGRATION EMAIL_NOTIFICATION_INTEGRATION TO ROLE DATA_ENGINEER_ROLE;
 ```
 
@@ -496,15 +492,15 @@ CREATE SCHEMA  IF NOT EXISTS ANALYTICS_DB.DQ_MONITORING;
 USE SCHEMA ANALYTICS_DB.RAW;
 ```
 
-### Step 3 — File Formats (Bug Fixed)
+### Step 3 — File Formats 
 
 ```sql
 -- Main format — data loading (skips header)
--- BUG FIX v1.1: Added RECORD_DELIMITER = '\n' to match Unix CSV endings
+-- Added RECORD_DELIMITER = '\n' to match Unix CSV endings
 CREATE OR REPLACE FILE FORMAT CSV_FORMAT
     TYPE                         = 'CSV'
     FIELD_DELIMITER              = ','
-    RECORD_DELIMITER             = '\n'   -- ← ADDED in v1.1
+    RECORD_DELIMITER             = '\n'  
     SKIP_HEADER                  = 1
     NULL_IF                      = ('', 'NULL', 'null', 'N/A', 'NA')
     EMPTY_FIELD_AS_NULL          = TRUE
@@ -514,11 +510,11 @@ CREATE OR REPLACE FILE FORMAT CSV_FORMAT
     TIMESTAMP_FORMAT             = 'YYYY-MM-DD HH24:MI:SS';
 
 -- Header-reading format — column count check (reads row 0)
--- BUG FIX v1.1: Added RECORD_DELIMITER = '\n' to prevent \r on last col
+-- Added RECORD_DELIMITER = '\n' to prevent \r on last col
 CREATE OR REPLACE FILE FORMAT CSV_FORMAT_NO_SKIP
     TYPE                         = 'CSV'
     FIELD_DELIMITER              = ','
-    RECORD_DELIMITER             = '\n'   -- ← ADDED in v1.1
+    RECORD_DELIMITER             = '\n'   
     SKIP_HEADER                  = 0
     FIELD_OPTIONALLY_ENCLOSED_BY = '"'
     TRIM_SPACE                   = TRUE
@@ -690,7 +686,7 @@ except Exception as unexpected:
     for line in traceback.format_exc().splitlines():
         print(f'    {line}')
 ```
-This replaces the silent swallow from v1.0, so any future SQL errors are immediately visible in the Python Worksheet output panel.
+Any future SQL errors are immediately visible in the Python Worksheet output panel.
 
 ### 8.4 DQResult Dataclass
 
@@ -1058,5 +1054,3 @@ ALTER TASK DQ_PIPELINE_DAILY RESUME;
 | New team onboarding | Need isolated config | Copy `CFG` dict, update all parameters, set unique `team_name` |
 
 ---
-
-*End of Documentation — ANALYTICSWITHANAND Data Quality Framework v1.1*

@@ -1,0 +1,42 @@
+version: 2
+
+models:
+  - name: stg_admissions
+    description: "Cleaned admissions; discharge_date derived, codes decoded."
+    columns:
+      - name: admission_id
+        tests: [unique, not_null]
+      - name: admission_type
+        tests:
+          - accepted_values: {values: ['Emergency','Urgent','Elective']}
+      - name: length_of_stay
+        tests:
+          - dbt_utils.accepted_range: {min_value: 0, inclusive: true}
+
+  - name: stg_treatments
+    description: "Cleaned treatment records."
+    columns:
+      - name: treatment_id
+        tests: [unique, not_null]
+      - name: admission_id
+        tests:
+          - relationships:
+              to: ref('stg_admissions')
+              field: admission_id
+      - name: outcome
+        tests:
+          - accepted_values: {values: ['Success','Partial','Failed']}
+
+  - name: stg_claims
+    description: "Cleaned insurance claims."
+    columns:
+      - name: claim_id
+        tests: [unique, not_null]
+      - name: admission_id
+        tests:
+          - relationships:
+              to: ref('stg_admissions')
+              field: admission_id
+      - name: claim_status
+        tests:
+          - accepted_values: {values: ['Approved','Rejected','Pending']}

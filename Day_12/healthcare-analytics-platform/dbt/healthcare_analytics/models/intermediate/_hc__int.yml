@@ -1,0 +1,8 @@
+version: 2
+models:
+  - name: int_patient_metrics
+    description: "Per-patient lifetime admission aggregates (ephemeral)."
+  - name: int_treatment_metrics
+    description: "Per-admission treatment cost & success rollup (ephemeral)."
+  - name: int_claim_metrics
+    description: "Per-admission claim financial rollup (ephemeral)."

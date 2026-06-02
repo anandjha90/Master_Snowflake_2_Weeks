@@ -1,0 +1,15 @@
+# Copy to ~/.dbt/profiles.yml (dbt Core) or configure these in dbt Cloud UI.
+healthcare_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "<your_account>.<region>"   # e.g. ab12345.us-east-1
+      user: "<your_user>"
+      password: "<your_password>"           # or use key-pair / SSO
+      role: HC_TRANSFORMER
+      warehouse: HC_WH
+      database: HC_DB
+      schema: staging          # default schema; +schema configs override per layer
+      threads: 4
+      client_session_keep_alive: false

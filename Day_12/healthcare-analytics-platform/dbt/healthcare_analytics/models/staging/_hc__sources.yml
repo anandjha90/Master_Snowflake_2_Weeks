@@ -1,0 +1,24 @@
+version: 2
+
+sources:
+  - name: raw
+    database: HC_DB
+    schema: RAW
+    description: "Raw CSVs loaded from S3 via COPY INTO."
+    tables:
+      - name: patient_admissions
+        loaded_at_field: admit_date
+        freshness:
+          warn_after:  {count: 30, period: day}
+          error_after: {count: 60, period: day}
+        columns:
+          - name: admission_id
+            tests: [unique, not_null]
+      - name: treatment_records
+        columns:
+          - name: treatment_id
+            tests: [unique, not_null]
+      - name: insurance_claims
+        columns:
+          - name: claim_id
+            tests: [unique, not_null]

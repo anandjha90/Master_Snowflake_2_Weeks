@@ -1,0 +1,52 @@
+version: 2
+models:
+  - name: dim_patient
+    columns:
+      - name: patient_key
+        tests: [unique, not_null]
+  - name: dim_doctor
+    columns:
+      - name: doctor_key
+        tests: [unique, not_null]
+  - name: dim_hospital
+    columns:
+      - name: hospital_key
+        tests: [unique, not_null]
+  - name: dim_insurance
+    columns:
+      - name: insurance_key
+        tests: [unique, not_null]
+  - name: fact_admissions
+    columns:
+      - name: admission_id
+        tests: [unique, not_null]
+      - name: doctor_key
+        tests:
+          - relationships: {to: ref('dim_doctor'), field: doctor_key}
+      - name: hospital_key
+        tests:
+          - relationships: {to: ref('dim_hospital'), field: hospital_key}
+  - name: fact_treatments
+    columns:
+      - name: treatment_id
+        tests: [unique, not_null]
+  - name: fact_claims
+    columns:
+      - name: claim_id
+        tests: [unique, not_null]
+      - name: insurance_key
+        tests:
+          - relationships: {to: ref('dim_insurance'), field: insurance_key}
+
+exposures:
+  - name: hospital_executive_dashboard
+    type: dashboard
+    maturity: high
+    url: https://your-bi-tool.example.com/hc-exec
+    description: "Executive KPIs: occupancy, readmission, revenue, claim approval."
+    depends_on:
+      - ref('fact_admissions')
+      - ref('fact_claims')
+    owner:
+      name: Analytics Team
+      email: analytics@example.com

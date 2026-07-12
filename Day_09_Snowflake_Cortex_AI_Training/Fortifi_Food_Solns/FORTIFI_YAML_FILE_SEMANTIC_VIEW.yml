@@ -1,0 +1,975 @@
+name: DEV_ANALYTICS_SEMANTIC_VW
+tables:
+  - name: FACT_ERP_INFO_COPY
+    synonyms:
+      - Enterprise Resource Planning Data
+      - ERP Information
+      - Inventory Details
+      - Item Master Data
+      - Logistics Data
+      - Material Master Data
+      - Procurement Information
+      - Product Information
+      - Supply Chain Information
+    description: The table contains records of product information. Each record represents a single item and includes details about its description, classification, procurement, and cost. The records cover various product categories and include information about vendors, lead times, and inventory management.
+    base_table:
+      database: DEV_ANALYTICS_TW
+      schema: DEV_ANALYTICS_SCHEMA
+      table: FACT_ERP_INFO_COPY
+    dimensions:
+      - name: ABC_CODE_DESCRIPTION
+        synonyms:
+          - abc_category
+          - abc_classification
+          - abc_code_meaning
+          - abc_label
+          - inventory_category_description
+          - inventory_classification
+        description: A brief description of the ABC code.
+        expr: '"ABC Code - Description"'
+        data_type: VARCHAR(16777216)
+      - name: BUYER_DESCRIPTION
+        synonyms:
+          - buyer_name
+          - buyer_title
+          - procurement_description
+          - procurement_manager
+          - procurement_officer
+          - procurement_specialist
+          - purchaser_description
+          - purchasing_agent
+        description: The name or description of the buyer.
+        expr: '"Buyer - Description"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - Paul Witbreuk
+          - Angie Farmer
+      - name: COUNTRY_OF_ORIGIN
+        synonyms:
+          - country_of_manufacture
+          - country_of_production
+          - country_of_source
+          - manufacturing_country
+          - origin_country
+          - production_country
+          - source_country
+        description: The country where the item originated from.
+        expr: '"Country Of Origin"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - CZECH REPUBLIC
+          - NEW ZEALAND
+      - name: FAMILY_CODE_DESCRIPTION
+        synonyms:
+          - family_category_description
+          - family_classification_description
+          - family_code_name
+          - family_group_description
+          - product_family_description
+        description: A description of the family code.
+        expr: '"Family Code - Description"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - COMPOSANTS ELECTRIQUES DETAILS
+          - 3SPECIAL
+          - 5PROD
+      - name: HTS_CODE
+        synonyms:
+          - commodity_code
+          - customs_code
+          - export_code
+          - harmonized_system_code
+          - harmonized_tariff_schedule
+          - hts
+          - import_code
+          - tariff_code
+          - trade_code
+        description: Harmonized Tariff Schedule codes used to classify internationally traded products.
+        expr: '"HTS Code"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - '84314980'
+          - 8438.90.9060
+          - '84199000'
+      - name: ITEM
+        synonyms:
+          - article
+          - commodity
+          - entity
+          - goods
+          - inventory_item
+          - merchandise
+          - object
+          - product
+          - stock
+          - unit
+        description: Unique identifiers for items.
+        expr: '"Item"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - 4590039651-y
+          - CRC 3076 Degreasert XD8
+          - 1-048685
+      - name: ITEM_DESCRIPTION
+        synonyms:
+          - item_details
+          - item_info
+          - item_specification
+          - product_description
+          - product_info
+          - product_specification
+        description: A brief description of the item.
+        expr: '"Item Description"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - Reserve 4" x 4" Tubing
+          - PROX MOUNT-HANDED
+          - Cable Tray
+      - name: ITEM_STATUS_DESCRIPTION
+        synonyms:
+          - inventory_condition
+          - inventory_status
+          - item_condition
+          - item_state
+          - item_status
+          - product_condition
+          - product_status
+          - stock_status
+        description: A description of the status of an item.
+        expr: '"Item Status - Description"'
+        data_type: VARCHAR(16777216)
+      - name: LEVEL_1
+        synonyms:
+          - category_1
+          - first_level
+          - first_tier
+          - level_one
+          - main_category
+          - primary_level
+          - tier_1
+          - top_level
+        description: A high-level categorization of the data.
+        expr: '"Level 1"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - VMI
+          - '302'
+      - name: LEVEL_2_DESCRIPTION
+        synonyms:
+          - level_two_de
+          - level_two_label
+          - level_two_name
+          - second_level_label
+          - secondary_category_description
+          - secondary_level_description
+        description: A detailed description of the product or component at the second level of categorization.
+        expr: '"Level 2 Description"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - Chain & sprockets
+          - Hydraulics
+          - Vision
+      - name: LEVEL_3_DESCRIPTION
+        synonyms:
+          - level_three_category
+          - subcategory_level_three
+          - tertiary_level_name
+          - third_level_description
+          - third_tier_description
+        description: A detailed description of a product or component at the third level of categorization.
+        expr: '"Level 3 Description"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - Lighting & optics (LED ring lights, backlights, bar lights, structured light projectors, lasers, Lenses, filters (polarizing,IR,etc.))
+          - Pipes (rectagle, round, square)
+          - Gearbox
+      - name: PLANNER_CODE_DESCRIPTION
+        synonyms:
+          - logistics_code_description
+          - planner_name
+          - planner_title
+          - planning_code_description
+          - planning_manager_description
+          - planning_owner
+          - planning_responsible
+          - procurement_planner_description
+          - supply_chain_planner_description
+        description: A brief description of the planner code.
+        expr: '"Planner Code - Description"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - OSS
+          - '302'
+          - CO
+      - name: PMT_CODE_DESCRIPTION
+        synonyms:
+          - payment_code_info
+          - payment_method_description
+          - payment_method_info
+          - payment_type_description
+          - payment_type_info
+        description: Payment method descriptions.
+        expr: '"PMT Code - Description"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - Direct
+      - name: PRODUCT_CODE_DESCRIPTION
+        synonyms:
+          - product_category
+          - product_code_name
+          - product_group_description
+          - product_identifier_description
+          - product_label_description
+        description: Product codes and their corresponding descriptions.
+        expr: '"Product Code - Description"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - PYMCOM1201 - Commodity Parts, General, Cantrell
+          - PYMCOM1230 - Purchased Parts, Distributor
+      - name: RANK_1_VENDOR
+        synonyms:
+          - first_choice_vendor
+          - lead_vendor
+          - main_provider
+          - preferred_vendor
+          - primary_vendor
+          - top_supplier
+        description: The name of the primary vendor.
+        expr: '"Rank 1 Vendor"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - Pajo Bolte A/S - 500676
+          - Frontmatec (Jining) Co., Ltd - 501048
+          - Frontmatec Tandslet A/S - 500003
+      - name: SITE
+        synonyms:
+          - branch
+          - depot
+          - establishment
+          - facility
+          - location
+          - office
+          - plant
+          - premises
+          - warehouse
+        description: The name or identifier of a specific location or facility.
+        expr: '"Site"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - DKTA
+          - Mokena
+          - Flawil
+      - name: UNIT_OF_MEASURE
+        synonyms:
+          - measurement_type
+          - measurement_unit
+          - quantity_unit
+          - unit_description
+          - unit_of_measurement
+          - unit_type
+          - uom
+        description: Units of measurement for quantities, such as each, piece, or item.
+        expr: '"Unit of Measure"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - UN
+          - EA
+          - P
+    facts:
+      - name: INVENTORY_TURNS
+        synonyms:
+          - inventory_rotation
+          - inventory_turnover_rate
+          - stock_turnover
+          - stock_turnover_rate
+          - stock_turns
+        description: The number of times inventory is sold and replaced within a given period.
+        expr: '"Inventory Turns"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: INVENTORY_VALUE
+        synonyms:
+          - inventory_total_value
+          - inventory_worth
+          - stock_value
+          - stock_worth
+          - total_inventory_cost
+          - total_stock_value
+        description: The total monetary value of inventory.
+        expr: '"Inventory Value"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: ITEM_S_LEAD_TIME
+        synonyms:
+          - item_arrival_time
+          - item_delivery_time
+          - item_lead_time
+          - item_procurement_time
+          - item_replenishment_time
+          - item_supply_time
+          - item_wait_time
+          - lead_time_for_items
+        description: The time it takes for an item to be delivered or produced after it has been ordered.
+        expr: '"Item''s Lead Time"'
+        data_type: NUMBER(38,8)
+        access_modifier: public_access
+        sample_values:
+          - '79.00000000'
+          - '80.00000000'
+          - '35.00000000'
+      - name: LEVEL_2
+        synonyms:
+          - intermediate_level
+          - level_two
+          - mid_level
+          - middle_level
+          - second_level
+          - secondary_level
+          - sub_level
+          - tier_2
+        description: A level of categorization or classification, likely indicating a specific tier or ranking.
+        expr: '"Level 2"'
+        data_type: NUMBER(38,5)
+        access_modifier: public_access
+        sample_values:
+          - '118.00000'
+          - '103.00000'
+          - '114.00000'
+      - name: LEVEL_3
+        synonyms:
+          - level_three
+          - subcategory_three
+          - tertiary_level
+          - third_category
+          - third_hierarchy_level
+          - third_level
+        description: A hierarchical level of categorization.
+        expr: '"Level 3"'
+        data_type: NUMBER(38,5)
+        access_modifier: public_access
+        sample_values:
+          - '221.00000'
+          - '178.00000'
+          - '2.00000'
+      - name: MINIMUM_ORDER_QUANTITY
+        synonyms:
+          - min_order_quantity
+          - minimum_batch_size
+          - minimum_order_amount
+          - minimum_purchase_quantity
+          - order_threshold
+          - reorder_quantity
+        description: The minimum quantity of an item that must be ordered.
+        expr: '"Minimum Order Quantity"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: MONTHS_ON_HAND
+        synonyms:
+          - inventory_duration
+          - inventory_months
+          - inventory_period
+          - months_of_inventory
+          - months_of_stock
+          - stock_duration
+        description: The number of months for which inventory is expected to last.
+        expr: '"Months On Hand"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: NETTABLE_QTY_ON_HAND
+        expr: '"Nettable Qty On Hand"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: QTY_AVAILABLE
+        expr: '"Qty Available"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: QTY_BACKLOG_ON_JOB_ORDERS
+        expr: '"Qty Backlog on Job Orders"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: QTY_BACKLOG_ON_PO
+        expr: '"Qty Backlog On PO"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: QTY_CONSUMED_ON_THE_LAST_12_MONTHS
+        expr: '"Qty consumed on the Last 12 Months"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: QTY_CONSUMED_ON_THE_LAST_18_MONTHS
+        expr: '"Qty consumed on the Last 18 Months"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: QTY_CONSUMED_ON_THE_LAST_24_MONTHS
+        expr: '"Qty consumed on the Last 24 Months"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: QTY_CONSUMED_ON_THE_LAST_3_MONTHS
+        expr: '"Qty consumed on the Last 3 Months"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: QTY_CONSUMED_ON_THE_LAST_6_MONTHS
+        expr: '"Qty consumed on the Last 6 Months"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: REORDER_POINT
+        expr: '"Reorder Point"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: SAFETY_STOCK
+        expr: '"Safety Stock"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: STANDARD_INSIDE_OPERATIONS_COST
+        expr: '"Standard Inside Operations Cost"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: STANDARD_MATERIAL_ONLY_COST
+        expr: '"Standard Material Only Cost"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: STANDARD_OUTSIDE_OPERATIONS_COST
+        expr: '"Standard Outside Operations Cost"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+      - name: STANDARD_TOTAL_UNIT_COST
+        synonyms:
+          - average_unit_cost
+          - standard_cost_per_unit
+          - standard_item_cost
+          - total_cost_per_item
+          - total_item_price
+          - total_unit_cost
+          - unit_price
+        description: The total cost of a standard unit.
+        expr: '"Standard Total Unit Cost"'
+        data_type: NUMBER(18,4)
+        access_modifier: public_access
+    metrics:
+      - name: site_end_date
+        description: Identifies the latest site value within a group, typically used as a proxy for the end date in site-based inventory analysis. Use when questions ask about 'end date', 'latest site', or 'end of inventory period' for each site. Helps define the reporting period for inventory metrics, allowing users to see the closing timeframe for inventory value or other site-based measures.
+        expr: MAX(site)
+      - name: site_start_date
+        description: Identifies the earliest site value within a group, typically used as a proxy for the start date in site-based inventory analysis. Use when questions ask about 'start date', 'earliest site', or 'beginning of inventory period' for each site. Helps establish the timeframe for inventory reporting, enabling users to understand the period covered by inventory value or other site-based metrics.
+        expr: MIN(site)
+  - name: FACT_PURCHASING_REPORT_COPY
+    synonyms:
+      - Procurement Data
+      - Procurement Report
+      - Procurement Summary
+      - Purchase Order Analysis
+      - Purchase Order Details
+      - Purchase Order Report
+      - Purchasing Data
+      - Purchasing Report
+      - Purchasing Summary
+    description: The table contains records of purchasing activities, specifically details about orders and deliveries. Each record represents a single purchase order line item and includes information about the vendor, item, and logistics, as well as dates and codes related to the purchasing process.
+    base_table:
+      database: DEV_ANALYTICS_TW
+      schema: DEV_ANALYTICS_SCHEMA
+      table: FACT_PURCHASING_REPORT_COPY
+    dimensions:
+      - name: BUYER
+        synonyms:
+          - acquirer
+          - client
+          - customer
+          - procurer
+          - purchaser
+        description: The name of the person or entity making the purchase.
+        expr: '"Buyer"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - BESTER
+          - Kevin Struillou
+          - d.burton@mhmautomation.com
+      - name: COST_CODE_DESC
+        synonyms:
+          - _center_description
+          - cost_account_description
+          - expense_category_description
+          - expense_code_description
+          - financial_code_description
+        description: A description of a cost code.
+        expr: '"Cost Code - Desc"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - 9361 - WIPASS
+          - 9355 - 9355
+          - 2025 - 4259
+      - name: CURRENCY_CODE
+        synonyms:
+          - currency
+          - currency_symbol
+          - currency_type
+          - exchange_rate
+          - exchange_unit
+          - iso_code
+          - monetary_unit
+          - money_type
+        description: The three-character code representing the currency in which a transaction was made.
+        expr: '"Currency Code"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - NZD
+          - CAD
+          - DKK
+      - name: DATE_SEQ
+        synonyms:
+          - date_id
+          - date_index
+          - date_number
+          - date_order
+          - date_sequence
+          - sequence_date
+          - sequence_number
+        description: A sequential identifier for dates.
+        expr: '"Date Seq"'
+        data_type: NUMBER(18,0)
+        sample_values:
+          - '35'
+          - '2'
+          - '3'
+      - name: DELIVERY_TIME_DAYS
+        synonyms:
+          - days_to_deliver
+          - delivery_duration
+          - delivery_lead_time
+          - lead_time
+          - shipping_days
+          - shipping_duration
+          - transit_time
+        description: The number of days required to deliver an item.
+        expr: '"Delivery Time (days)"'
+        data_type: NUMBER(9,0)
+        sample_values:
+          - '15'
+          - '21'
+          - '261'
+      - name: DESTINATION_DETAILS
+        synonyms:
+          - consignee_details
+          - delivery_address
+          - delivery_location
+          - destination_info
+          - drop_off_point
+          - receiving_address
+          - receiving_location
+          - shipment_details
+        description: Details about the destination of a purchase or shipment.
+        expr: '"Destination Details"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - PO120909
+          - '1100420744'
+          - '92956'
+      - name: DESTINATION_TYPE
+        synonyms:
+          - delivery_address
+          - delivery_location
+          - delivery_point
+          - drop_off_point
+          - receiving_location
+          - receiving_point
+          - shipment_address
+          - shipment_destination
+        description: The type of destination for a purchase order.
+        expr: '"Destination Type"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - Order - Line - Rel
+      - name: DUE_DATE
+        synonyms:
+          - deadline
+          - delivery_due_date
+          - expected_completion_date
+          - planned_delivery_date
+          - required_by_date
+          - scheduled_date
+          - target_date
+        description: The date by which payment is due.
+        expr: CAST(TRY_TO_TIMESTAMP(NULLIF("Due Date", ''),'DD-MM-YYYY') AS DATE)
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - '2025-06-04'
+          - '2026-02-23'
+          - '2025-12-17'
+        is_enum: false
+      - name: ITEM
+        synonyms:
+          - article
+          - asset
+          - commodity
+          - goods
+          - inventory
+          - material
+          - merchandise
+          - object
+          - stock
+        description: A unique identifier for a purchased item.
+        expr: '"Item"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - '4001098260'
+          - 004367-A
+          - 1-040253
+      - name: ITEM_DESCRIPTION
+        synonyms:
+          - item_characteristics
+          - item_details
+          - item_info_description
+          - item_specification
+          - product_characteristics
+          - product_info
+          - product_specification
+        description: A brief description of the item being purchased.
+        expr: '"Item Description"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - Red Heliflex S&D Hose 38mm (1.5") 2m
+          - Roller bearing SF-21310-CC, spherical d50
+          - Nut nyloc s/s gr304 m0016
+      - name: LAST_REC_D_DATE
+        synonyms:
+          - date_last_received
+          - last_delivery_date
+          - last_received_date
+          - last_recieved
+          - latest_receipt_date
+          - most_recent_receipt_date
+        description: The date when the item was last received.
+        expr: CAST(TRY_TO_TIMESTAMP(NULLIF("Last Rec'd Date", ''),'DD-MM-YYYY') AS DATE)
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - '2026-01-29'
+          - '2026-01-08'
+          - '2025-05-07'
+        is_enum: false
+      - name: ORDER_DATE
+        synonyms:
+          - order_creation_date
+          - order_initiation_date
+          - order_placement_date
+          - order_submission_date
+          - purchase_date
+        description: The date on which the order was placed.
+        expr: CAST(TRY_TO_TIMESTAMP(NULLIF("Order Date", ''),'DD-MM-YYYY') AS DATE)
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - '2025-12-05'
+          - '2024-12-16'
+          - '2025-12-19'
+        is_enum: false
+      - name: PLANNER_CODE_DESC
+        synonyms:
+          - planner_description
+          - planner_name
+          - planning_code_description
+          - planning_code_name
+          - procurement_code_description
+          - procurement_code_name
+          - purchasing_code_description
+          - purchasing_code_name
+        description: A brief description of the planner code.
+        expr: '"Planner Code - Desc"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - RM
+          - '302'
+          - '202'
+      - name: PO_NUM_LINE_RELEASE
+        synonyms:
+          - order_line_release
+          - po_line_number
+          - po_line_release
+          - po_number_line_release
+          - procurement_order_line_release
+          - procurement_release
+          - purchase_order_line_release
+          - purchase_order_number
+        description: Purchase order number, line number, and release number.
+        expr: '"PO Num - Line - Release"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - PO1454052 - 230 - 0
+          - PO024149 - 2 - 0
+          - PO021628 - 22 - 0
+      - name: PROMISE_DATE
+        synonyms:
+          - committed_date
+          - estimated_arrival_date
+          - expected_ship_date
+          - ised_delivery_date
+          - planned_delivery_date
+          - scheduled_delivery_date
+          - target_date
+        description: The date by which a purchase is promised to be fulfilled.
+        expr: CAST(TRY_TO_TIMESTAMP(NULLIF("Promise Date", ''),'DD-MM-YYYY') AS DATE)
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - '2025-07-02'
+          - '2025-12-23'
+          - '2025-02-06'
+        is_enum: false
+      - name: RECEIVED_DATE_TIME
+        synonyms:
+          - arrival_date_time
+          - arrival_time
+          - date_arrived
+          - date_received
+          - delivery_date
+          - receipt_date
+          - received_at
+          - received_timestamp
+          - time_received
+        description: The date and time when the item was received.
+        expr: CAST(TRY_TO_TIMESTAMP(NULLIF("Received Date/Time", ''),'DD-MM-YYYY HH24:MI') AS DATE)
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - '2025-12-18'
+          - '2025-02-11'
+          - '2026-03-03'
+        is_enum: false
+      - name: SITE
+        synonyms:
+          - branch
+          - depot
+          - facility
+          - office
+          - place
+          - plant
+          - premises
+          - venue
+          - warehouse
+        description: The geographical location or site where a purchase was made.
+        expr: '"Site"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - CAQC
+          - DKTA
+          - EU
+      - name: U_M
+        synonyms:
+          - measurement_unit
+          - measurement_unit_code
+          - unit_measurement
+          - unit_of_measure
+          - uom
+        description: Unit of measurement.
+        expr: '"U/M"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - Pcs
+          - MT
+          - PCE
+      - name: VENDOR_VEND_NUM
+        synonyms:
+          - merchant_number
+          - provider_number
+          - seller_id
+          - supplier_id
+          - trader_id
+          - vendor_identifier
+          - vendor_number
+        description: The name of the vendor along with their corresponding vendor number.
+        expr: '"Vendor - Vend Num"'
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - Motion NZ Limited - SAECO AKL
+          - Elcee Holland BV - 500519
+          - CHICAGO CHAIN & TRANSMISSION - 001400
+    time_dimensions:
+      - name: RELEASE_DATE
+        synonyms:
+          - activation_date
+          - deployment_date
+          - effective_date
+          - go_live_date
+          - issue_date
+          - launch_date
+          - publication_date
+          - release_timestamp
+        description: The date on which a product or service was made available to the public.
+        expr: '"Release Date"'
+        data_type: DATE
+    facts:
+      - name: PURCHASE_VALUE
+        synonyms:
+          - acquisition_cost
+          - expenditure_value
+          - procurement_value
+          - purchase_amount
+          - total_cost
+          - total_spent
+        description: The monetary value of a purchase.
+        expr: '"Purchase Value"'
+        data_type: NUMBER(38,12)
+        access_modifier: public_access
+        sample_values:
+          - '125.560000000000'
+          - '1040.000000000000'
+          - '2532.000000000000'
+      - name: QTY_ORDERED
+        synonyms:
+          - order_quantity
+          - ordered_amount
+          - ordered_quantity
+          - quantity_ordered
+          - requested_quantity
+        description: The quantity of items ordered.
+        expr: '"Qty Ordered"'
+        data_type: NUMBER(38,4)
+        access_modifier: public_access
+        sample_values:
+          - '19425.0000'
+          - '373.5000'
+          - '1092.0000'
+      - name: QTY_RECEIVED
+        synonyms:
+          - accepted_quantity
+          - quantity_accepted
+          - received_ quantity_received
+          - received_amount
+          - received_qty
+        description: The quantity of items received.
+        expr: '"Qty Received"'
+        data_type: NUMBER(38,4)
+        access_modifier: public_access
+        sample_values:
+          - '3.0700'
+          - '173.0000'
+          - '142.5000'
+      - name: UNIT_COST
+        synonyms:
+          - cost_per_item
+          - cost_per_unit
+          - item_cost
+          - price_per_item
+          - price_per_unit
+          - unit_price
+          - unit_value
+        description: The cost of a single unit of an item.
+        expr: '"Unit Cost"'
+        data_type: NUMBER(38,9)
+        access_modifier: public_access
+        sample_values:
+          - '303.000000000'
+          - '1569.900000000'
+          - '2150.260000000'
+    metrics:
+      - name: AVERAGE_DELIVERY_TIME_DAYS
+        synonyms:
+          - avg_delivery_days
+          - delivery_time_average
+          - mean_delivery_time
+        description: Calculates the average delivery time in days for purchase orders. Apply when analyzing supplier performance, logistics efficiency, or comparing delivery speed across destination types, buyers, or sites. This metric helps operations teams identify bottlenecks, optimize lead times, and improve customer satisfaction by tracking timely fulfillment.
+        expr: AVG(fact_purchasing_report_copy.delivery_time_days)
+        access_modifier: public_access
+      - name: TOTAL_UNITS_ORDERED
+        synonyms:
+          - ordered_quantity
+          - procurement_volume
+          - units_ordered
+        description: Calculates the total quantity of units ordered across all purchase orders. Apply when analyzing procurement volume, tracking purchasing trends, or comparing order activity by currency, site, or buyer. This metric helps procurement teams understand demand, optimize inventory, and negotiate with suppliers based on order volume.
+        expr: SUM(fact_purchasing_report_copy.qty_ordered)
+        access_modifier: public_access
+verified_queries:
+  - name: '"What is the total inventory value for each site?"'
+    sql: |-
+      SELECT
+        site,
+        MIN(site) AS start_date,
+        MAX(site) AS end_date,
+        SUM(inventory_value) AS total_inventory_value
+      FROM
+        fact_erp_info_copy
+      GROUP BY
+        site
+      ORDER BY
+        total_inventory_value DESC NULLS LAST
+        /* Generated by Cortex Analyst (request_id: 83534156-952c-44ea-821f-3f4eea767200) */
+    question: What is the total inventory value for each site?
+    verified_at: 1783696647
+    verified_by: CORTEX_SVC_USER
+    use_as_onboarding_question: false
+  - name: '"How many units were ordered for each currency code in the last month?"'
+    sql: |-
+      SELECT
+        currency_code,
+        SUM(qty_ordered) AS total_units_ordered
+      FROM
+        fact_purchasing_report_copy
+      WHERE
+        release_date >= DATE_TRUNC('MONTH', CURRENT_DATE - INTERVAL '1 MONTH')
+        AND release_date < DATE_TRUNC('MONTH', CURRENT_DATE)
+      GROUP BY
+        currency_code
+      ORDER BY
+        total_units_ordered DESC NULLS LAST
+        /* Generated by Cortex Analyst (request_id: 59bb3695-2bb7-482b-91a7-280ac14a4f68) */
+    question: How many units were ordered for each currency code in the last month?
+    verified_at: 1783696666
+    verified_by: CORTEX_SVC_USER
+    use_as_onboarding_question: false
+  - name: '"What is the average delivery time in days for each destination type year to date?"'
+    sql: |-
+      SELECT
+        destination_type,
+        AVG(delivery_time_days) AS avg_delivery_time_days
+      FROM
+        fact_purchasing_report_copy
+      WHERE
+        release_date >= DATE_TRUNC('YEAR', CURRENT_DATE)
+        AND release_date <= CURRENT_DATE
+      GROUP BY
+        destination_type
+      ORDER BY
+        avg_delivery_time_days DESC NULLS LAST
+        /* Generated by Cortex Analyst (request_id: f8c61837-d14b-4336-a908-0ec95adb0ab7) */
+    question: What is the average delivery time in days for each destination type year to date?
+    verified_at: 1783696705
+    verified_by: CORTEX_SVC_USER
+    use_as_onboarding_question: false
+  - name: What is the total inventory value for each site over the entire available time period? Please include the start date and end date of the data used.
+    question: What is the total inventory value for each site over the entire available time period? Please include the start date and end date of the data used.
+    sql: |-
+      SELECT
+        site,
+        MIN(site) AS start_date,
+        MAX(site) AS end_date,
+        SUM(inventory_value) AS total_inventory_value
+      FROM
+        fact_erp_info_copy
+      GROUP BY
+        site
+      ORDER BY
+        total_inventory_value DESC NULLS LAST
+        /* Generated by Cortex Analyst (request_id: 83534156-952c-44ea-821f-3f4eea767200) */
+    use_as_onboarding_question: true
+    verified_by: CORTEX_SVC_USER
+    verified_at: 1783705030
+  - name: How many purchase records and unique locations and items are tracked in the purchasing report?
+    question: How many purchase records and unique locations and items are tracked in the purchasing report?
+    sql: |-
+      SELECT
+        COUNT(site) AS count_site,
+        APPROX_COUNT_DISTINCT(site) AS distinct_site,
+        COUNT(item) AS count_item,
+        APPROX_COUNT_DISTINCT(item) AS distinct_item
+      FROM
+        fact_purchasing_report_copy
+    use_as_onboarding_question: true
+    verified_by: CORTEX_SVC_USER
+    verified_at: 1783705045
+  - name: How many product records and unique locations are tracked in the inventory database?
+    question: How many product records and unique locations are tracked in the inventory database?
+    sql: |-
+      SELECT
+        COUNT(site) AS count_site,
+        APPROX_COUNT_DISTINCT(site) AS distinct_site,
+        COUNT(item) AS count_item,
+        APPROX_COUNT_DISTINCT(item) AS distinct_item
+      FROM
+        fact_erp_info_copy
+    use_as_onboarding_question: true
+    verified_by: CORTEX_SVC_USER
+    verified_at: 1783705063

@@ -1,5 +1,4 @@
 # Data Quality Pipeline Orchestrator for Snowflake stage file ingestion
-# Co-authored with CoCo
 # ============================================================
 # main.py  —  Data Quality Pipeline Orchestrator
 # ============================================================
